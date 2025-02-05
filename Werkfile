@@ -1,4 +1,11 @@
+config profile = "debug"
+
 let werk-vscode-version = shell "jq --raw-output .version werk-vscode/package.json" 
+
+let cargo-profile = profile | match {
+    "debug" => "dev"
+    "%" => "{%}"
+}
 
 build "werk-vscode/node_modules" {
     from ["werk-vscode/package.json", "werk-vscode/package-lock.json"]
@@ -10,6 +17,11 @@ build "/werk-vscode/werk-{werk-vscode-version}.vsix" {
 }
 build "/book/book" {
     run "mdbook build book --dest-dir book/book"
+}
+build "{profile}/werk{EXE_SUFFIX}" {
+    depfile "{profile}/werk.d"
+
+    run "cargo build --profile {cargo-profile}"
 }
 
 task vscode-install-extension {
