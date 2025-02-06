@@ -32,6 +32,14 @@
       "scopeName": "source.werk",
       "path": "./syntaxes/werk.tmLanguage.json"
     }],
+    "configuration": {
+      "properties": {
+        "werk.enableCodeLens": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
     "taskDefinitions": [
       {
         "type": "werk",

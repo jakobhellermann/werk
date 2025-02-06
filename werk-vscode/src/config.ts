@@ -11,4 +11,8 @@ export class Config {
     private get<T>(path: string): T {
         return this.config.get<T>(path)!;
     }
+
+    get enableCodeLens(): boolean {
+        return this.get("enableCodeLens");
+    }
 }
