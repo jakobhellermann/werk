@@ -31,7 +31,23 @@
       "language": "werk",
       "scopeName": "source.werk",
       "path": "./syntaxes/werk.tmLanguage.json"
-    }]
+    }],
+    "taskDefinitions": [
+      {
+        "type": "werk",
+        "required": ["kind", "target"],
+        "properties": {
+          "kind": {
+            "type":"string",
+            "enum": ["task", "build"]
+          },
+          "target": {
+            "type": "string"
+          }
+        },
+        "when": "shellExecutionSupported"
+      }
+    ]
   },
   "devDependencies": {
     "@vscode/vsce": "3.2.2",
