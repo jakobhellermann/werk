@@ -10,16 +10,21 @@
   },
   "scripts": {
     "vsce": "vsce",
-    "package": "vsce package"
+    "package": "vsce package",
+    "build": "esbuild src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node --target=node14 --sourcemap",
+    "watch": "npm run build -- --watch",
+    "check": "tsc --noEmit",
+    "vscode:prepublish": "npm run build -- --minify"
   },
   "categories": [
     "Programming Languages"
   ],
+  "main": "out/main.js",
   "contributes": {
     "languages": [{
       "id": "werk",
       "aliases": ["Werk", "werk"],
-      "extensions": [".werk","Werkfile","werkfile"],
+      "extensions": [".werk", "Werkfile", "werkfile"],
       "configuration": "./language-configuration.json"
     }],
     "grammars": [{
@@ -29,6 +34,11 @@
     }]
   },
   "devDependencies": {
-    "@vscode/vsce": "3.2.2"
+    "@vscode/vsce": "3.2.2",
+    "@types/node": "^22.13.1",
+    "@types/vscode": "^1.96.0",
+    "esbuild": "^0.24.2"
+  },
+  "dependencies": {
   }
 }
