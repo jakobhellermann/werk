@@ -11,10 +11,10 @@
   "scripts": {
     "vsce": "vsce",
     "package": "vsce package",
-    "build": "esbuild src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node --target=node14 --sourcemap",
-    "watch": "npm run build -- --watch",
-    "check": "tsc --noEmit",
-    "vscode:prepublish": "npm run build -- --minify"
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "vscode:prepublish": "tsc && node esbuild.mjs --production",
+    "check": "tsc"
   },
   "categories": [
     "Programming Languages"

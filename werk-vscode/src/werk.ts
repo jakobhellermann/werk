@@ -9,7 +9,7 @@ export function* getTargets(werkfile: string): Generator<WerkTarget> {
         yield {
             kind: kind as ("task" | "build"),
             target,
-            index: match.index,
+            index: match.index!,
         };
     }
 }
