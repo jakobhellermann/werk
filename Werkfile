@@ -23,6 +23,17 @@ build "{profile}/werk{EXE_SUFFIX}" {
 
     run "cargo build --profile {cargo-profile}"
 }
+build "/wasm32-unknown-unknown/{profile}/wasm_glue.wasm" {
+    depfile "{out:.wasm=.d}" 
+    run "cargo build --manifest-path werk-vscode/wasm-glue/Cargo.toml --target wasm32-unknown-unknown --profile {cargo-profile}"
+}
+build "wasm-bindgen/{profile}/wasm_glue.js" {
+    let out-dir = "{profile}/wasm-bindgen"
+
+    from "wasm32-unknown-unknown/{profile}/wasm_glue.wasm";
+    run "wasm-bindgen --target web target/wasm32-unknown-unknown/{profile}/wasm_glue.wasm --out-dir <out:dir>"
+}
+
 
 task vscode-install-extension {
     let vsix = "/werk-vscode/werk-{werk-vscode-version}.vsix"

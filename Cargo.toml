@@ -6,6 +6,7 @@ members = [
     "werk-fs",
     "tests",
     "werk-util",
+    "werk-vscode/wasm-glue",
 ]
 resolver = "2"
 

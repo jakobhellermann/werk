@@ -15,6 +15,15 @@ async function main() {
         platform: 'node',
         outfile: 'out/main.js',
         external: ['vscode'],
+        logOverride: {
+            // wasm-bindgen generates this as a fallback
+            "empty-import-meta": "silent",
+        },
+        loader: {
+            ".wasm": "file",
+        },
+        plugins: [
+        ]
     });
     if (watch) {
         await ctx.watch();
