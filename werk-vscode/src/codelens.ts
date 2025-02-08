@@ -25,21 +25,15 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 
         const text = document.getText();
         for (const runnable of werk.getTargets(text)) {
-            const line = document.lineAt(document.positionAt(runnable.index).line);
-            const indexOf = line.text.indexOf(runnable.target);
-            const position = new vscode.Position(line.lineNumber, indexOf);
+            const line = document.lineAt(document.positionAt(runnable.span[0]).line);
+            let command = {
+                title: "Run",
+                tooltip: runnable.target,
+                command: "werk.run",
+                arguments: [document.uri.fsPath, runnable]
+            };
 
-            const range = document.getWordRangeAtPosition(position, werk.RE_RUNNABLE);
-            if (range) {
-                let command = {
-                    title: "Run",
-                    tooltip: runnable.target,
-                    command: "werk.run",
-                    arguments: [document.uri.fsPath, runnable]
-                };
-
-                this.codeLenses.push(new vscode.CodeLens(range, command));
-            }
+            this.codeLenses.push(new vscode.CodeLens(line.range, command));
         }
         return this.codeLenses;
     }

@@ -2,24 +2,16 @@ import * as vscode from 'vscode';
 import { ExtensionContext, languages, commands, Disposable, window, Range } from 'vscode';
 import { Config } from './config';
 import * as tasks from './tasks';
+import * as werk from './werk';
 import { WerkTarget } from './werk';
 import { CodelensProvider } from './codelens';
-
-import * as fs from "node:fs";
-import * as path from "node:path";
-
-// @ts-ignore
-import wasmPath from "../../target/wasm-bindgen/debug/wasm_glue_bg.wasm";
-import * as glue from "../../target/wasm-bindgen/debug/wasm_glue";
 
 const LANGUAGE_ID = "werk";
 
 let disposables: Disposable[] = [];
 
 export function activate(_context: ExtensionContext) {
-    const wasm = fs.readFileSync(path.join(__dirname, wasmPath));
-    glue.initSync({ module: wasm });
-    vscode.window.showInformationMessage(JSON.stringify(glue.exported()));
+    werk.init();
 
     const config = new Config();
     const taskProvider = new tasks.TaskProvider();
