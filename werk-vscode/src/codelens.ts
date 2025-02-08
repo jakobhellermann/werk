@@ -9,6 +9,8 @@ export class CodelensProvider implements vscode.CodeLensProvider {
     private _onDidChangeCodeLenses: vscode.EventEmitter<void> = new vscode.EventEmitter<void>();
     public readonly onDidChangeCodeLenses: vscode.Event<void> = this._onDidChangeCodeLenses.event;
 
+    private cacheKey: number | undefined;
+
     constructor(config: Config) {
         this.config = config;
 
@@ -19,22 +21,32 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 
     public provideCodeLenses(document: vscode.TextDocument, _token: vscode.CancellationToken): vscode.CodeLens[] | Thenable<vscode.CodeLens[]> {
         if (!this.config.enableCodeLens) return [];
+
         if (document.uri.scheme !== "file") return [];
 
-        this.codeLenses = [];
 
-        const text = document.getText();
-        for (const runnable of werk.getTargets(text)) {
-            const line = document.lineAt(document.positionAt(runnable.span[0]).line);
-            let command = {
-                title: "Run",
-                tooltip: runnable.target,
-                command: "werk.run",
-                arguments: [document.uri.fsPath, runnable]
-            };
+        const werkfile = document.getText();
+        let cacheKey = (werkfile.match(/\n/g) ?? '').length; // invalidate when lines might change
+        try {
+            this.codeLenses = werk.getTargets(werkfile).map(target => {
+                const line = document.lineAt(document.positionAt(target.span[0]).line);
+                let command = {
+                    title: "Run",
+                    tooltip: target.target,
+                    command: "werk.run",
+                    arguments: [document.uri.fsPath, target]
+                };
 
-            this.codeLenses.push(new vscode.CodeLens(line.range, command));
+                return new vscode.CodeLens(line.range, command);
+            });
+        } catch (e) {
+            if (this.cacheKey != cacheKey) {
+                this.codeLenses = [];
+            }
         }
+        console.log(`has ${this.codeLenses.length}`);
+
+        this.cacheKey = cacheKey;
         return this.codeLenses;
     }
 }
